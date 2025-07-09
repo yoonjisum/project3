@@ -57,10 +57,37 @@ if task_type != "선택하세요":
     for link in tool["링크"]:
         st.markdown(f"[🔗 도구 바로가기]({link})")
 
-# 사용자 맞춤형 질문
-st.divider()
-st.write("🎯 더 구체적인 도움이 필요하신가요?")
-custom_query = st.text_input("예: 'AI로 역사 과제 요약할 수 있을까요?'")
+ai_tools = {
+    "PPT 제작": {
+        "이름": "Gamma, Tome",
+        "설명": "AI 기반으로 자동 디자인과 내용 요약을 통해 빠르게 PPT를 생성할 수 있습니다.",
+        "링크": ["https://gamma.app", "https://tome.app"],
+        "이미지": [
+            "https://assets.gamma.app/homepage/Gamma_Logo.svg",  # Gamma 공식 로고 URL 예시
+            "https://tome.app/static/media/tome-logo.a55a0d9e.svg"  # Tome 공식 로고 URL 예시
+        ]
+    },
+    "자료 검색": {
+        "이름": "Perplexity, Consensus",
+        "설명": "질문에 대한 최신 논문, 웹 정보 등을 AI가 요약해 제공해주는 검색 도구입니다.",
+        "링크": ["https://www.perplexity.ai", "https://consensus.app"],
+        "이미지": [
+            "https://www.perplexity.ai/static/media/logo.4e836e56.svg",
+            "https://consensus.app/favicon.ico"
+        ]
+    },
+    # ... 나머지 도구들도 동일하게 이미지 URL 추가
+}
 
-if custom_query:
-    st.info("현재는 기본 추천 기능만 제공하고 있습니다. 추후 사용자 입력 기반 추천 기능이 추가될 예정입니다.")
+# 추천 결과 출력 예시
+if task_type != "선택하세요":
+    tool = ai_tools[task_type]
+    st.subheader(f"✅ 추천 인공지능 도구: {tool['이름']}")
+    st.write(tool["설명"])
+    
+    # 이미지와 링크를 같이 출력
+    cols = st.columns(len(tool["이미지"]))
+    for idx, img_url in enumerate(tool["이미지"]):
+        with cols[idx]:
+            st.image(img_url, width=100)
+            st.markdown(f"[🔗 바로가기]({tool['링크'][idx]})")
