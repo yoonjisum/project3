@@ -95,6 +95,7 @@ if task_type != "선택하세요":
 import streamlit as st
 import openai
 
+
 # OpenAI API 키 설정
 openai.api_key = "YOUR_API_KEY"  # 👉 여기에 본인의 OpenAI API 키 입력
 
@@ -113,6 +114,10 @@ ai_tools = {
         {"name": "Tableau", "description": "코딩 없이 데이터 시각화"}
     ]
 }
+pip install streamlit openai
+
+import openai
+openai.api_key = "YOUR_API_KEY"  # 안전하게 관리하세요
 
 # OpenAI로 과제 유형 분류
 def classify_task(user_input):
