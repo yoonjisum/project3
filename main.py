@@ -91,3 +91,69 @@ if task_type != "선택하세요":
         with cols[idx]:
             st.image(img_url, width=100)
             st.markdown(f"[🔗 바로가기]({tool['링크'][idx]})")
+
+import streamlit as st
+import openai
+
+# OpenAI API 키 설정
+openai.api_key = "YOUR_API_KEY"  # 👉 여기에 본인의 OpenAI API 키 입력
+
+# 과제 유형별 추천 도구
+ai_tools = {
+    "PPT 제작": [
+        {"name": "Gamma", "description": "글을 입력하면 자동으로 슬라이드 생성"},
+        {"name": "Tome", "description": "스토리 기반 AI 프레젠테이션 도구"}
+    ],
+    "자료 검색": [
+        {"name": "Perplexity", "description": "출처 기반 AI 검색 엔진"},
+        {"name": "Consensus", "description": "논문 기반 AI 검색 요약 도구"}
+    ],
+    "시각화 자료 생성": [
+        {"name": "ChatGPT + Python", "description": "프롬프트 기반 시각화 코드 생성"},
+        {"name": "Tableau", "description": "코딩 없이 데이터 시각화"}
+    ]
+}
+
+# OpenAI로 과제 유형 분류
+def classify_task(user_input):
+    prompt = f"""
+    다음 사용자의 과제 설명을 읽고 아래 3가지 중 어떤 유형인지 하나만 골라줘:
+    1. PPT 제작
+    2. 자료 검색
+    3. 시각화 자료 생성
+    
+    과제 설명: "{user_input}"
+    결과는 한 단어로만 답해줘 (예: PPT 제작, 자료 검색, 시각화 자료 생성).
+    """
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",  # 또는 gpt-3.5-turbo
+        messages=[
+            {"role": "system", "content": "너는 과제 도우미야."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return response.choices[0].message.content.strip()
+
+# --- Streamlit App ---
+st.set_page_config(page_title="AI 과제 유형 분류기", page_icon="🎯", layout="centered")
+st.title("🎯 자연어 기반 과제 도우미")
+st.markdown("과제 내용을 입력하면, 적절한 AI 도구를 추천해드릴게요!")
+
+user_input = st.text_area("📥 과제 내용을 자유롭게 입력하세요:")
+
+if st.button("AI 도구 추천받기") and user_input:
+    with st.spinner("AI가 과제 유형을 분석 중입니다..."):
+        task_type = classify_task(user_input)
+        st.success(f"✅ AI가 판단한 과제 유형: **{task_type}**")
+
+        if task_type in ai_tools:
+            st.markdown("### 🔍 추천 AI 도구:")
+            for tool in ai_tools[task_type]:
+                st.markdown(f"""
+                **🔹 {tool['name']}**  
+                - {tool['description']}
+                """)
+        else:
+            st.warning("⚠️ 적절한 유형을 찾지 못했어요. 입력을 조금 더 자세히 해주세요.")
+
