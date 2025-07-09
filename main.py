@@ -1,4 +1,9 @@
+# 1. 필요한 패키지 설치
 pip install streamlit
+
+# 2. 스트림릿 앱 실행
+streamlit run ai_task_helper_combined.py
+
 import streamlit as st
 
 # --- 과제 유형별 추천 도구 사전 ---
